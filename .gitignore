@@ -7,3 +7,5 @@ temperat.fad0c3a0/
 *.pdb
 *.ilk
 *.recipe
+*.exe
+*.out
