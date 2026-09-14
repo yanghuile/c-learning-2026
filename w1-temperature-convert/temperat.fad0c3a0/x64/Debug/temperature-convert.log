@@ -1,4 +1,0 @@
-﻿  main.c
-D:\Users\Yanghuile\source\repos\c-learning\w1-temperature-convert\main.c(8,22): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-D:\Users\Yanghuile\source\repos\c-learning\w1-temperature-convert\main.c(12,15): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-  temperature-convert.vcxproj -> D:\Users\Yanghuile\source\repos\c-learning\w1-temperature-convert\x64\Debug\temperature-convert.exe
