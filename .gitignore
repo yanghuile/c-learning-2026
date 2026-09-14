@@ -1,11 +1,5 @@
-.vs/
-x64/
-temperat.fad0c3a0/
-*.user
-*.obj
-*.tlog
-*.pdb
-*.ilk
-*.recipe
-*.exe
-*.out
+# 设置控制台输入输出为UTF-8
+chcp 65001 > $null
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::InputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
