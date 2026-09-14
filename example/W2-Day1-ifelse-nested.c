@@ -4,6 +4,7 @@ int main()
 {
     //初始化
     int a,b,c;
+    int max=0;
     //int max=0;
     //读取数字
     printf("请输入三个数字：");
@@ -13,24 +14,25 @@ int main()
     {
         if(b>=c)
         {
-            printf("最大数是%d\n",b);
+            max=b;
         }
         else
         {
-            printf("最大数是%d\n",c);
+            max=c;
         }
     }
     else
     {
         if(a>=c)
         {
-            printf("最大数是%d",a);
+            max=a;
         }
         else
         {
-            printf("最大数是%d",c);
+            max=c;
         }
     }
+    printf("最大数是%d\n",max);
     
     return 0; 
 }
