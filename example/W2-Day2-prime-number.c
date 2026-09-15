@@ -12,7 +12,7 @@ int main()
         if(x%i==0)
         {
             isPrime=0;
-            //break;
+            break;
         }
     }
     if(isPrime==1)
@@ -21,7 +21,7 @@ int main()
     }
     else
     {
-         printf("这个数不是素数");
+        printf("这个数不是素数");
     }
 
     return 0;
