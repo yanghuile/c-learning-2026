@@ -4,23 +4,27 @@ int main()
 {
     int x;
     scanf("%d",&x);
-    int t=0;
-    //先逆序打印数字
-    do
+    int t=x;
+    int mask=1;
+    
+    while(t>9)
     {
-        int d=x%10;
-        t=t*10+d;
-        x/=10;
-    } while (x>0);
+        t/=10;
+        mask*=10;
+    } 
 
-    //正序分解数字
-    x=t;
     do
     {
-        int d=x%10;
+        int d=x/mask;
         printf("%d ",d);
-        x/=10;
-    }while(x>0);
+        if(mask>9)
+        {
+            printf(" ");
+        }
+        x%=mask;
+        mask/=10;
+    }while(mask>0);
+    printf("\n");
     
     return 0;
 }
