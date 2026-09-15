@@ -3,29 +3,19 @@
 int main()
 {
     int a,b;
-    int min;
+    int t;
 
     scanf("%d %d",&a,&b);
-    if(a<b)
+
+    while(b!=0)
     {
-        min=a;
+        t=a%b;
+        a=b;
+        b=t;
     }
-    else
-    {
-        min=b;
-    }
-    int ret;
-    for(int i=1;i<min;i++)
-    {
-        if(a%i==0)
-        {
-            if(b%i==0)
-            {
-                ret=i;
-            }
-        }
-    }
-    printf("%d和%d的最大公约数是:%d",a,b,ret);
+   
+ 
+    printf("最大公约数是:%d",a);
 
     return 0;
 }
