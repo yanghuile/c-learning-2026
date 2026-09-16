@@ -10,7 +10,11 @@ int main()
 
     while(x!=-1)
     {
-        number[cnt]=x;
+        //防止数组越界
+        if(cnt<100)
+        {
+            number[cnt]=x;
+        }
         sum+=x;
         cnt++;
         scanf("%d",&x);
@@ -22,7 +26,7 @@ int main()
     }
     else
     {
-        printf("平均数是%.2f:\n",sum/cnt);
+        printf("平均数是:%.2f\n",sum/cnt);
         for(int i=0;i<cnt;i++)
         {
             if(number[i]>sum/cnt)
