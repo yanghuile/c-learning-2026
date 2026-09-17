@@ -16,22 +16,20 @@ int main()
     //读取目标值
     scanf("%d",&x);
 
+    //初始化 index 为 -1，代表默认没找到
+    int index=-1;
+
     //遍历数组
-    int i;
-    for(i=0;i<n;i++)
+    for(int i=0;i<n;i++)
     {
         if(arr[i]==x)
         {
-            int index=i;
-            printf("%d\n",index);
+            index=i;
             break;
         }
     }
-    //循环自然结束，说明没找到
-    if(i==n)
-    {
-        printf("-1\n");
-    }
+    //无论找没找到，最后统一输出index即可
+    printf("%d\n",index);
 
     return 0;
 }
