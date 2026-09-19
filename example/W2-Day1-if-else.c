@@ -9,7 +9,7 @@ int main()
     printf("请输入金额：");
     scanf("%d",&price);
     printf("请输入票面：");
-    scanf("%D",&bill);
+    scanf("%d",&bill);
     //计算找零
     if(bill>=price)
     {
