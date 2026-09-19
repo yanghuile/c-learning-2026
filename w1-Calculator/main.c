@@ -7,7 +7,7 @@ int main()
 	printf("请输入两个数(用空格分隔）：");
 
 	/* 检查输入是否成功：scanf返回成功读取的变量个数 */
-	if (scanf_s("%lf %lf", &a, &b) != 2)
+	if (scanf("%lf %lf", &a, &b) != 2)
 	{
 		printf("输入有误，请重新输入！\n");
 		return 1;
