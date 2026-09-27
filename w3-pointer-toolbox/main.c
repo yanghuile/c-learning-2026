@@ -116,13 +116,14 @@ int myStrcmp(const char *s1,const char *s2)
 // 4. 字符串拼接
 char *myStrcat(char *dest,const char *src)
 {
-    // 第一步：让 dest 指针走到目标字符串的末尾（遇到 '\0'）
+    //第一步：先保存首地址
+    char *start=dest;
+    // 第二步：让 dest 指针走到目标字符串的末尾（遇到 '\0'）
     while(*dest!='\0')
     {
         dest++;
     }
-    // 第二步：把 src 拷贝到 dest 的末尾
-    char *start=dest;
+    // 第三步：把 src 拷贝到 dest 的末尾
     while(*dest++=*src++);
     return start;
 }
