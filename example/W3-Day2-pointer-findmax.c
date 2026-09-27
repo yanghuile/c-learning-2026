@@ -8,6 +8,12 @@ int main()
     int len;
     scanf("%d",&len);
 
+    // 防御：防止长度越界
+    if (len < 0 || len > 100) {
+        printf("无效的长度\n");
+        return 1;
+    }
+
     for(int i=0;i<len;i++)
     {
         scanf("%d",&arr[i]);
@@ -28,9 +34,9 @@ int findMax(int *p,int n)
     int max=*p;
     for(int i=1;i<n;i++)
     {
-        if(*(p+i)>*p)
+        if(*(p+i)>max)
         {
-            max=*(p+1);
+            max=*(p+i);
         }
     }
     return max;
