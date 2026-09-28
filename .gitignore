@@ -1,6 +1,8 @@
+# ---- Visual Studio 工程与产物 ----
 .vs/
 x64/
 Debug/
+Release/
 *.sln
 *.vcxproj
 *.vcxproj.filters
@@ -8,5 +10,26 @@ Debug/
 *.suo
 *.obj
 *.tlog
+
+# ---- 编译产物 ----
 *.exe
+*.o
+*.a
+*.dll
+*.out
 output/
+build/
+
+# ---- 编译体检日志（本地用，不入库） ----
+tools/warnings.log
+
+# ---- 嵌入式（后面 W10 开始用） ----
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
+
+# ---- 系统 ----
+Thumbs.db
+desktop.ini
