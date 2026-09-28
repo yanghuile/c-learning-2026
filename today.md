@@ -2,29 +2,62 @@
 
 > 每天 14:30 会弹窗提醒。忘了弹窗内容就看这个文件，或看 `study-daily.md`。
 
-## 本周目标（一句话）
+## 怎么打勾
 
-让 `check-all` 显示 **53 个文件、零警告 53**。
+Markdown 的勾选框语法就是**空格换成字母 x**：
+
+```markdown
+- [ ] 没完成      ← 中括号里是空格
+- [x] 已完成      ← 中括号里是字母 x
+```
+
+在 VS Code 里更方便：**鼠标点一下那个方框**就自动打勾了
+（需要 Markdown 预览模式：按 `Ctrl+Shift+V` 打开预览）。
+
+---
+
+## 当前进度
+
+**验收标准：`check-all` 显示「零警告 55」**（55 = 53 个练习 + 2 个样板文件）
+
+| 指标 | 起始 | 现在 | 目标 |
+|---|---|---|---|
+| 零警告文件 | 46 | **49** | 55 |
+| 警告条数 | 15 | **7** | 0 |
+
+**剩余 6 个文件、7 条警告：**
+
+- [x] `example\W3-Day2-pointer-array-relationship.c` — 8 条 ✅ 已清零
+- [ ] `example\W4-Day1-pointer-myMemcpy.c` — 1 条（**真 bug**）
+- [ ] `w3-pointer-toolbox\main.c` — 2 条
+- [ ] `example\W2-Day2-reverse-number.c` — 1 条
+- [ ] `example\W3-Day3-pointer-const.c` — 1 条
+- [ ] `example\W3-Day4-pointer-strcpy.c` — 1 条
+- [ ] `w3-string-processor\main.c` — 1 条
+
+---
 
 ## 本周三个动作
 
-1. **清零 15 条警告**（7 个文件）
+1. **清零 15 条警告**（7 个文件）—— 已完成 8 条
 2. **读 `projects/w4-string-lib/`**，理解多文件工程怎么组织
 3. **自己写一个 Makefile**，把 `w3-pointer-toolbox` 拆成多文件
 
 ---
 
-## Day 1（周一 09-28）：先学会用工具，不动代码
+## Day 1（周一 09-28）：先学会用工具，不动代码 ✅ 已完成
 
 今天只做一件事：**学会用 `chk` 和 `b` 这两个命令。**
 
-- [ ] 打开终端，`cd` 到 `c-learning`
-- [ ] 跑 `.\chk example\W2-Day2-prime-number.c` → 应该显示 **clean, zero warnings**
-- [ ] 跑 `.\chk example\W3-Day2-pointer-array-relationship.c` → 应该显示 **8 warnings, need to fix**
-- [ ] 跑 `.\b example\W3-Day1-function-isprime.c`，输入 `17` → 应输出 `17是素数`
-- [ ] 跑 `.\b example\W2-Day2-reverse-number.c` → 应**停下不运行**，并指出第 8 行有问题
+- [x] 打开终端，`cd` 到 `c-learning`
+- [x] 跑 `chk example\W2-Day2-prime-number.c` → 显示 **clean, zero warnings**
+- [x] 跑 `chk example\W3-Day2-pointer-array-relationship.c` → 显示警告
+- [x] 跑 `b example\W3-Day1-function-isprime.c`，输入 `17` → 输出 `17是素数`
+- [x] 跑 `b example\W2-Day2-reverse-number.c` → **停下不运行**，指出第 8 行有问题
 
-**今天的验收**：你能不看本文，自己说出 `chk` 和 `b` 的区别。
+**额外完成**：把仓库目录加进 PATH（以后 `chk` 不用加 `.\`）；统一换行符策略；两次 git 提交并推送成功。
+
+**验收**：能说出 `chk`（只检查）和 `b`（检查通过才编译运行）的区别。
 
 ---
 
@@ -32,8 +65,8 @@
 
 用 `chk <文件>` 逐条看，改一条重跑一次。
 
-- [ ] `example\W3-Day2-pointer-array-relationship.c` — **8 条** `-Wformat=`
-  - 提示：`%p` 要求参数是 `void *`，所以打印指针要写 `(void*)arr`
+- [x] `example\W3-Day2-pointer-array-relationship.c` — **8 条** `-Wformat=` ✅
+  - `(void *)(arr + 1)` — 注意括号要包住整个算式，因为 `(void *)` 优先级高于 `+`
 - [ ] `example\W4-Day1-pointer-myMemcpy.c` — **1 条** `-Wdiscarded-qualifiers`
   - 提示：`char *s = (const char*)src;` 把 `const` 丢了。
   - 正确写法：`const char *s = (const char *)src;`
