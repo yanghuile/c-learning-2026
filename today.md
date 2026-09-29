@@ -2,6 +2,31 @@
 
 > 每天 14:30 会弹窗提醒。忘了弹窗内容就看这个文件，或看 `study-daily.md`。
 
+---
+
+## 📌 推送规则（每天必看）
+
+**每晚学习结束前必须 push 一次。** 这是硬性习惯，不是可选项。
+
+| 时机 | 为什么 |
+|---|---|
+| **每晚学习结束时**（最重要） | 电脑坏了/丢了，这几周的成果全没。GitHub 就是你的备份 |
+| **完成一个目标时** | 比如今天「警告清零」，这是一个天然的里程碑 |
+| **换电脑或换环境前** | 不然代码分在两台机器上，会冲突 |
+| **每次 `commit` 后立刻 `push`** | 别攒着，攒着容易忘 |
+
+**每晚的三条命令（雷打不动）：**
+
+```bash
+git add -A
+git commit -m "类型: 做了什么"
+git push
+```
+
+**自检**：跑 `git status`，看到 `Your branch is up to date with 'origin/main'` 就说明推干净了。
+
+---
+
 ## 怎么打勾
 
 Markdown 的勾选框语法就是**空格换成字母 x**：
@@ -22,18 +47,18 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 | 指标 | 起始 | 现在 | 目标 |
 |---|---|---|---|
-| 零警告文件 | 46 | **49** | 55 |
-| 警告条数 | 15 | **7** | 0 |
+| 零警告文件 | 46 | **55** ✅ | 55 |
+| 警告条数 | 15 | **0** ✅ | 0 |
 
-**剩余 6 个文件、7 条警告：**
+**警告清零情况（全部完成）：**
 
 - [x] `example\W3-Day2-pointer-array-relationship.c` — 8 条 ✅ 已清零
-- [ ] `example\W4-Day1-pointer-myMemcpy.c` — 1 条（**真 bug**）
-- [ ] `w3-pointer-toolbox\main.c` — 2 条
-- [ ] `example\W2-Day2-reverse-number.c` — 1 条
-- [ ] `example\W3-Day3-pointer-const.c` — 1 条
-- [ ] `example\W3-Day4-pointer-strcpy.c` — 1 条
-- [ ] `w3-string-processor\main.c` — 1 条
+- [x] `example\W4-Day1-pointer-myMemcpy.c` — 1 条（**真 bug**）✅
+- [x] `w3-pointer-toolbox\main.c` — 2 条 ✅
+- [x] `example\W2-Day2-reverse-number.c` — 1 条 ✅
+- [x] `example\W3-Day3-pointer-const.c` — 1 条 ✅
+- [x] `example\W3-Day4-pointer-strcpy.c` — 1 条 ✅
+- [x] `w3-string-processor\main.c` — 1 条 ✅
 
 ---
 
@@ -67,11 +92,11 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 - [x] `example\W3-Day2-pointer-array-relationship.c` — **8 条** `-Wformat=` ✅
   - `(void *)(arr + 1)` — 注意括号要包住整个算式，因为 `(void *)` 优先级高于 `+`
-- [ ] `example\W4-Day1-pointer-myMemcpy.c` — **1 条** `-Wdiscarded-qualifiers`
+- [x] `example\W4-Day1-pointer-myMemcpy.c` — **1 条** `-Wdiscarded-qualifiers` ✅
   - 提示：`char *s = (const char*)src;` 把 `const` 丢了。
   - 正确写法：`const char *s = (const char *)src;`
   - **这是真 bug**：在单片机上，字符串常量放在只读区，往那里写会直接崩溃（HardFault）
-- [ ] `example\W3-Day4-pointer-strcpy.c` — **1 条** `-Wparentheses`
+- [x] `example\W3-Day4-pointer-strcpy.c` — **1 条** `-Wparentheses` ✅
   - 提示：`while (*dest++ = *src++);` 外面再加一层括号：`while ((*dest++ = *src++))`
 
 **正确的写法对照在 `projects\w4-string-lib\my_string.c`**，可以打开对着看。
@@ -80,15 +105,15 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ---
 
-## Day 3（周三 09-30）：修剩下 4 个文件 + 修 2 个真 bug
+## Day 3（周三 09-30）：修 2 个真 bug（警告已全部清零 ✅）
 
-- [ ] `example\W2-Day2-reverse-number.c` — 1 条 `-Wunused-variable`
+- [x] `example\W2-Day2-reverse-number.c` — 1 条 ✅ `-Wunused-variable`
   - 第 8 行 `int ret=0;` 声明了从没用过 → 删掉
-- [ ] `example\W3-Day3-pointer-const.c` — 1 条 `-Wunused-but-set-variable`
+- [x] `example\W3-Day3-pointer-const.c` — 1 条 ✅ `-Wunused-but-set-variable`
   - `p1` 只赋值没使用 → 在 printf 里用一下，或改成 `(void)p1;`
-- [ ] `w3-pointer-toolbox\main.c` — 2 条 `-Wparentheses`（第 99、127 行）
+- [x] `w3-pointer-toolbox\main.c` — 2 条 ✅ `-Wparentheses`（第 99、127 行）
   - 和 Day2 的 strcpy 同一个问题
-- [ ] `w3-string-processor\main.c` — 1 条 `-Wsign-compare`（第 106 行）
+- [x] `w3-string-processor\main.c` — 1 条 ✅ `-Wsign-compare`（第 106 行）
   - 有符号数和无符号数比较 → 两边统一成 `int`，或给 `strlen` 的结果加 `(int)`
 - [ ] **真 bug ①**：`example\W2-Day4-array-char.c` 第 8 行
   - `scanf("%s", str)` 没有限制宽度，`str` 只有 1000 字节
@@ -142,7 +167,7 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ## Day 7（周日 10-04）：复盘 + 提交
 
-- [ ] 跑 `check-all`，确认零警告 53
+- [x] 跑 `check-all`，确认零警告 55 ✅ 已达成
 - [ ] 写 `notes\W4-复盘.md`（3-5 条：哪条警告最难懂？为什么？）
 - [ ] Git 提交：
   ```
@@ -152,7 +177,7 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
   ```
 - [ ] 确认三件套已下单（逻辑分析仪、CAN 模块 ×2、第二块 STM32F103）
 
-**本周结束的标志**：`check-all` 显示「53 个文件、零警告 53」。
+**本周结束的标志**：`check-all` 显示「零警告 55」✅ 已达成 + 两个真 bug 已修 + 多文件工程已拆好。
 
 ---
 
