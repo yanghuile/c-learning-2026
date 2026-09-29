@@ -23,7 +23,7 @@ char *myStrcpy(char *dest,const char *src)
     char *start = dest; 
     
     // 核心的一行：一边复制，一边移动，直到遇到 '\0'
-    while (*dest++ = *src++); 
+    while ((*dest++ = *src++)); 
     
     // 返回备份的首地址
     return start;

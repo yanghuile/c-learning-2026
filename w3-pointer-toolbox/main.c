@@ -96,7 +96,7 @@ int myStrlen(const char *s)
 char *myStrcpy(char *dest,const char *src)
 {
     char *start=dest;          //备份 dest 的首地址
-    while(*dest++=*src++);
+    while((*dest++=*src++));
     return start;
 }
 
@@ -124,7 +124,7 @@ char *myStrcat(char *dest,const char *src)
         dest++;
     }
     // 第三步：把 src 拷贝到 dest 的末尾
-    while(*dest++=*src++);
+    while((*dest++=*src++));
     return start;
 }
 

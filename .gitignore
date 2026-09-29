@@ -33,3 +33,7 @@ tools/warnings.log
 # ---- 系统 ----
 Thumbs.db
 desktop.ini
+
+# 复制粘贴 C 代码时 shell 误重定向产生的意外文件
+max_len*
+*.c)

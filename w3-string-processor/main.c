@@ -98,14 +98,14 @@ int findLongest(char *word[],int n)
 {
     if (n <= 0) return -1;
 
-    int max_len=strlen(word[0]);
+    int max_len=(int)strlen(word[0]);
     int max_idx=0;
 
     for(int i=1;i<n;i++)
     {
-        if(strlen(word[i]) > max_len)
+        if((int)strlen(word[i]) >max_len)
         {
-            max_len=strlen(word[i]);
+            max_len=(int)strlen(word[i]);
             max_idx=i;
         }
     }

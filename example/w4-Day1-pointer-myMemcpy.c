@@ -27,7 +27,7 @@ void *myMemcpy(void *dest,const void *src,size_t n)
 
     // 强制类型转换为 char*，以便按字节操作
     char *d=(char *)dest;
-    char *s=(const char *)src;
+    const char *s=(const char *)src;
 
     // 循环拷贝 n 个字节
     while(n--)

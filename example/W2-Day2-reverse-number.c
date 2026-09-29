@@ -5,7 +5,6 @@ int main()
     //初始化
     int x;
     int digit;
-    int ret=0;
 
     printf("请输入一个数：");
     scanf("%d",&x);
