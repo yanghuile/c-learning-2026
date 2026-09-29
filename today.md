@@ -65,7 +65,7 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 ## 本周三个动作
 
 1. **清零 15 条警告**（7 个文件）—— 已完成 8 条
-2. **读 `projects/w4-string-lib/`**，理解多文件工程怎么组织
+2. **读 `projects/multi-file-template/`**，理解多文件工程怎么组织
 3. **自己写一个 Makefile**，把 `w3-pointer-toolbox` 拆成多文件
 
 ---
@@ -99,7 +99,7 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 - [x] `example\W3-Day4-pointer-strcpy.c` — **1 条** `-Wparentheses` ✅
   - 提示：`while (*dest++ = *src++);` 外面再加一层括号：`while ((*dest++ = *src++))`
 
-**正确的写法对照在 `projects\w4-string-lib\my_string.c`**，可以打开对着看。
+**正确的写法对照在 `projects\multi-file-template\my_string.c`**，可以打开对着看。
 
 **今天的验收**：这 3 个文件跑 `chk` 都是 clean。
 
@@ -140,8 +140,8 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ## Day 5（周五 10-02）：读懂 Makefile
 
-- [ ] 打开 `projects\w4-string-lib\Makefile`，逐行看懂
-- [ ] 在 `projects\w4-string-lib` 下依次跑：
+- [ ] 打开 `projects\multi-file-template\Makefile`，逐行看懂
+- [ ] 在 `projects\multi-file-template` 下依次跑：
   - `mingw32-make check`（只查警告）
   - `mingw32-make`（编译）
   - `mingw32-make run`（运行）
@@ -158,7 +158,7 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
   - `my_string.h`（声明）
   - `my_string.c`（实现）
   - `main.c`（测试代码）
-- [ ] 照 `projects\w4-string-lib\Makefile` 写一个自己的 Makefile
+- [ ] 照 `projects\multi-file-template\Makefile` 写一个自己的 Makefile
 - [ ] `mingw32-make check` 必须零警告
 
 **今天的验收**：`mingw32-make` 一条命令能编译出可执行文件。

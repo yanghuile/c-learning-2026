@@ -110,7 +110,7 @@ gdb .\demo.exe
 ⚠️ **你的 MinGW 里 `make` 命令叫 `mingw32-make`**，功能完全一样：
 
 ```powershell
-cd projects\w4-string-lib
+cd projects\multi-file-template
 mingw32-make           # 编译
 mingw32-make run       # 编译并运行
 mingw32-make check     # 只查警告，不生成文件
@@ -170,4 +170,4 @@ cmd /c "gcc -std=c11 -Wall -Wextra -Wpedantic -fsyntax-only file.c 2> log.txt"
 | `example/W3-Day3-pointer-const.c` | 1 | `-Wunused-but-set-variable` |
 | `example/W3-Day4-pointer-strcpy.c` | 1 | `-Wparentheses` |
 
-**这 7 类警告的正确写法在 `projects/w4-string-lib/` 里有对照示例**（该目录零警告通过）。
+**这 7 类警告的正确写法在 `projects/multi-file-template/` 里有对照示例**（该目录零警告通过）。
