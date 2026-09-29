@@ -5,11 +5,14 @@ int main()
     char str[1000];
     int count[26]={0};
 
-    scanf("%s",str);
+    scanf("%999s",str);
 
     for(int i=0;str[i]!='\0';i++)
     {
-        count[str[i]-'a']++;
+        if(str[i]>='a' && str[i]<='z')
+        {
+            count[str[i]-'a']++;
+        }
     }
 
     for(int i=0;i<26;i++)
