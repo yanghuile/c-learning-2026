@@ -140,13 +140,13 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ## Day 5（周五 10-02）：读懂 Makefile
 
-- [ ] 打开 `projects\multi-file-template\Makefile`，逐行看懂
-- [ ] 在 `projects\multi-file-template` 下依次跑：
+- [x] 打开 `projects\multi-file-template\Makefile`，逐行看懂 ✅
+- [x] 在 `projects\multi-file-template` 下依次跑四个命令 ✅
   - `mingw32-make check`（只查警告）
   - `mingw32-make`（编译）
   - `mingw32-make run`（运行）
   - `mingw32-make clean`（清理）
-- [ ] 打开 `my_string.h`，搞懂 include guard（`#ifndef` / `#define` / `#endif`）在防什么
+- [x] 打开 `my_string.h`，搞懂 include guard 在防什么 ✅
 
 **今天的验收**：能解释「为什么头文件要有 include guard」和「为什么实现要放 .c 而不是 .h」。
 
@@ -154,12 +154,12 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ## Day 6（周六 10-03）：自己拆一个多文件工程
 
-- [ ] 把 `w3-pointer-toolbox\main.c` 拆成三个文件：
+- [x] 把 `w3-pointer-toolbox\main.c` 拆成三个文件 ✅（`w4-my-toolbox\`）
   - `my_string.h`（声明）
   - `my_string.c`（实现）
   - `main.c`（测试代码）
-- [ ] 照 `projects\multi-file-template\Makefile` 写一个自己的 Makefile
-- [ ] `mingw32-make check` 必须零警告
+- [x] 照样板写一个自己的 Makefile ✅（修了 8 处错误后跑通）
+- [x] `mingw32-make check` 零警告 ✅
 
 **今天的验收**：`mingw32-make` 一条命令能编译出可执行文件。
 
