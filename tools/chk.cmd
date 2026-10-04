@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 REM ============================================================
 REM  Check warnings only, do not run
-REM  Usage:  chk example\W5-bit-ops.c
+REM  Usage:  chk exercises\W5-bit-ops.c
 REM
 REM  Note: gcc returns exit code 0 even when it only warns, so we
 REM        count the "warning:" lines ourselves instead of relying
@@ -12,7 +12,7 @@ REM ============================================================
 if "%~1"=="" (
     echo.
     echo Usage: chk ^<path-to-c-file^>
-    echo Example: chk example\W5-bit-ops.c
+    echo Example: chk exercises\W5-bit-ops.c
     echo.
     exit /b 1
 )

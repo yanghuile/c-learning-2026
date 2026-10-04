@@ -8,20 +8,68 @@
 
 ```
 c-learning/
-├── example/                    第 2-4 周练习（53 个 .c，按 W2-Day1 规范命名）
-├── w1-Calculator/              第 1 周项目：简易计算器
-├── w1-temperature-convert/     第 1 周项目：温度转换
-├── w2-array-manager/           第 2 周项目：数组综合（成绩统计与排序）
-├── w3-pointer-toolbox/         第 3 周项目：指针字符串工具箱
-├── w3-string-processor/        第 3 周项目：单词排序与查找
-├── projects/
-│   └── w4-string-lib/          ★ W4 多文件工程样板（Makefile + .h + .c + 测试）
-├── tools/                      编译体检脚本
-│   ├── check-all.ps1           检查全部 .c 文件的警告
-│   ├── check-one.ps1           检查单个文件
-│   └── warnings.log            自动生成的完整诊断报告（已 gitignore）
-└── notes/                      学习笔记
+│
+├── exercises/                  ★ 全部单文件练习（53 个 .c）
+│   ├── W2-Day1-if-else.c           第 2 周：选择 / 循环 / 数组
+│   ├── W2-Day4-array-bubble-sort.c
+│   ├── W3-Day2-pointer-basic.c     第 3 周：函数 / 指针 / 字符串
+│   ├── W4-Day1-pointer-myMemcpy.c  第 4 周：手写标准库函数
+│   ├── W4-面试题.c                 练习：指针与数组、const
+│   ├── W5-位运算验收.c             练习：位运算
+│   ├── W5-struct练习.c             练习：结构体与内存对齐
+│   ├── W5-struct验收.c
+│   └── W5-关键字练习.c             练习：volatile / static / const
+│
+├── projects/                   ★ 每周的完整项目（多文件）
+│   ├── w1-calculator/              第 1 周：简易计算器
+│   ├── w1-temperature-convert/     第 1 周：温度转换
+│   ├── w2-array-manager/           第 2 周：数组综合（成绩统计与排序）
+│   ├── w3-pointer-toolbox/         第 3 周：指针字符串工具箱
+│   ├── w3-string-processor/        第 3 周：单词排序与查找
+│   └── w4-my-toolbox/              第 4 周：多文件工程 + 手写 Makefile
+│
+├── samples/                    ★ 参考资料（不是作业）
+│   └── multi-file-template/        多文件工程样板（Makefile + .h + .c + 测试）
+│
+├── notes/                      ★ 学习笔记（只有 .md）
+│   ├── error-notes.md              错误与知识点记录（AI 维护，周末看）
+│   ├── W4-警告笔记.md              15 条编译警告的解析
+│   ├── W4-复盘.md                  第 4 周复盘
+│   ├── W4-W5-复盘清单.md           复盘时该看什么
+│   └── W5-自学清单-关键字.md       volatile / static 自学清单
+│
+├── tools/                      ★ 工具脚本
+│   ├── b.cmd                       编译并运行单个 .c（有警告拒绝运行）
+│   ├── chk.cmd                     只检查警告，不运行
+│   ├── check-all.ps1               检查全部 .c 文件的警告
+│   ├── check-one.ps1               检查单个文件
+│   └── warnings.log                自动生成的诊断报告（已 gitignore）
+│
+├── README.md                   本文件
+├── today.md                    当前周的任务清单与进度
+├── .gitattributes              换行符策略
+└── .gitignore                  忽略规则
 ```
+
+### 各类内容放哪（判断标准）
+
+| 你想放的东西 | 放这里 | 判断标准 |
+|---|---|---|
+| 一个 `.c` 文件的小练习 | `exercises/` | **单文件**能编译运行 |
+| 需要多个文件协作的项目 | `projects/<周次>-<名字>/` | 有 `.h`/`.c` 分离，或有 Makefile |
+| 参考别人的代码 | `samples/` | **不是自己写的** |
+| 笔记、总结、复盘 | `notes/` | 是 `.md` 文件 |
+| 脚本、工具 | `tools/` | 不是 C 代码 |
+
+### 命名规范
+
+| 类型 | 规范 | 例子 |
+|---|---|---|
+| 练习文件 | `W<周>-Day<天>-<主题>.c` | `W2-Day4-array-bubble-sort.c` |
+| 周次专题练习 | `W<周>-<主题>.c` | `W5-位运算验收.c` |
+| 项目目录 | `w<周>-<小写连字符>` | `projects/w3-pointer-toolbox/` |
+| 笔记 | `W<周>-<主题>.md` | `W4-警告笔记.md` |
+
 
 ---
 
@@ -52,8 +100,8 @@ gcc -std=c11 -Wall -Wextra -Wpedantic
 在 `c-learning` 目录下打开 PowerShell，然后：
 
 ```powershell
-.\chk example\W5-bit-ops.c      # 只检查警告，不运行（改代码时反复用）
-.\b   example\W5-bit-ops.c      # 编译并运行（有警告就拒绝运行）
+.\chk exercises\W5-bit-ops.c      # 只检查警告，不运行（改代码时反复用）
+.\b   exercises\W5-bit-ops.c      # 编译并运行（有警告就拒绝运行）
 ```
 
 ⚠️ **前面的 `.\` 不能省。** PowerShell 出于安全考虑不执行当前目录下的程序，
@@ -81,26 +129,26 @@ powershell -ExecutionPolicy Bypass -File tools\check-all.ps1
 ### 2. 检查单个文件
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\check-one.ps1 example\W2-Day2-prime-number.c
+powershell -ExecutionPolicy Bypass -File tools\check-one.ps1 exercises\W2-Day2-prime-number.c
 ```
 
 或直接手跑（推荐养成习惯，输出最完整）：
 
 ```powershell
-gcc -std=c11 -Wall -Wextra -Wpedantic -fsyntax-only example\W2-Day2-prime-number.c
+gcc -std=c11 -Wall -Wextra -Wpedantic -fsyntax-only exercises\W2-Day2-prime-number.c
 ```
 
 ### 3. 编译并运行单个练习
 
 ```powershell
-gcc -std=c11 -Wall -Wextra -Wpedantic -g example\W2-Day2-prime-number.c -o demo.exe
+gcc -std=c11 -Wall -Wextra -Wpedantic -g exercises\W2-Day2-prime-number.c -o demo.exe
 .\demo.exe
 ```
 
 ### 4. 用 gdb 调试
 
 ```powershell
-gcc -std=c11 -Wall -Wextra -Wpedantic -g example\W2-Day4-array-char.c -o demo.exe
+gcc -std=c11 -Wall -Wextra -Wpedantic -g exercises\W2-Day4-array-char.c -o demo.exe
 gdb .\demo.exe
 # 常用命令: b main(在main下断点) / run / n(单步) / p 变量(打印) / bt(调用栈) / q(退出)
 ```
@@ -110,7 +158,7 @@ gdb .\demo.exe
 ⚠️ **你的 MinGW 里 `make` 命令叫 `mingw32-make`**，功能完全一样：
 
 ```powershell
-cd projects\multi-file-template
+cd samples\multi-file-template
 mingw32-make           # 编译
 mingw32-make run       # 编译并运行
 mingw32-make check     # 只查警告，不生成文件
@@ -162,12 +210,12 @@ cmd /c "gcc -std=c11 -Wall -Wextra -Wpedantic -fsyntax-only file.c 2> log.txt"
 
 | 文件 | 条数 | 警告类型 |
 |---|---|---|
-| `example/W3-Day2-pointer-array-relationship.c` | 8 | `-Wformat=` |
-| `w3-pointer-toolbox/main.c` | 2 | `-Wparentheses` |
-| `example/W4-Day1-pointer-myMemcpy.c` | 1 | `-Wdiscarded-qualifiers` |
-| `w3-string-processor/main.c` | 1 | `-Wsign-compare` |
-| `example/W2-Day2-reverse-number.c` | 1 | `-Wunused-variable` |
-| `example/W3-Day3-pointer-const.c` | 1 | `-Wunused-but-set-variable` |
-| `example/W3-Day4-pointer-strcpy.c` | 1 | `-Wparentheses` |
+| `exercises/W3-Day2-pointer-array-relationship.c` | 8 | `-Wformat=` |
+| `projects/w3-pointer-toolbox/main.c` | 2 | `-Wparentheses` |
+| `exercises/W4-Day1-pointer-myMemcpy.c` | 1 | `-Wdiscarded-qualifiers` |
+| `projects/w3-string-processor/main.c` | 1 | `-Wsign-compare` |
+| `exercises/W2-Day2-reverse-number.c` | 1 | `-Wunused-variable` |
+| `exercises/W3-Day3-pointer-const.c` | 1 | `-Wunused-but-set-variable` |
+| `exercises/W3-Day4-pointer-strcpy.c` | 1 | `-Wparentheses` |
 
-**这 7 类警告的正确写法在 `projects/multi-file-template/` 里有对照示例**（该目录零警告通过）。
+**这 7 类警告的正确写法在 `samples/multi-file-template/` 里有对照示例**（该目录零警告通过）。

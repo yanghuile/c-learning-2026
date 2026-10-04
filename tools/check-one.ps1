@@ -1,11 +1,11 @@
 # ============================================================
 #  单文件编译检查 —— 学习时最常用的命令
 #
-#  用法:  powershell -ExecutionPolicy Bypass -File tools\check-one.ps1 example\W2-Day4-array-char.c
-#         powershell -ExecutionPolicy Bypass -File tools\check-one.ps1 w3-pointer-toolbox\main.c
+#  用法:  powershell -ExecutionPolicy Bypass -File tools\check-one.ps1 exercises\W2-Day4-array-char.c
+#         powershell -ExecutionPolicy Bypass -File tools\check-one.ps1 projects\projects/w3-pointer-toolbox\main.c
 #
 #  提示:  直接跑 gcc 也能看到完整警告（推荐学会）：
-#         gcc -std=c11 -Wall -Wextra -Wpedantic -fsyntax-only example\W2-Day2-prime-number.c
+#         gcc -std=c11 -Wall -Wextra -Wpedantic -fsyntax-only exercises\W2-Day2-prime-number.c
 # ============================================================
 
 param(

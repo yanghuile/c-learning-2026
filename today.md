@@ -52,21 +52,21 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 **警告清零情况（全部完成）：**
 
-- [x] `example\W3-Day2-pointer-array-relationship.c` — 8 条 ✅ 已清零
-- [x] `example\W4-Day1-pointer-myMemcpy.c` — 1 条（**真 bug**）✅
-- [x] `w3-pointer-toolbox\main.c` — 2 条 ✅
-- [x] `example\W2-Day2-reverse-number.c` — 1 条 ✅
-- [x] `example\W3-Day3-pointer-const.c` — 1 条 ✅
-- [x] `example\W3-Day4-pointer-strcpy.c` — 1 条 ✅
-- [x] `w3-string-processor\main.c` — 1 条 ✅
+- [x] `exercises\W3-Day2-pointer-array-relationship.c` — 8 条 ✅ 已清零
+- [x] `exercises\W4-Day1-pointer-myMemcpy.c` — 1 条（**真 bug**）✅
+- [x] `projects\projects/w3-pointer-toolbox\main.c` — 2 条 ✅
+- [x] `exercises\W2-Day2-reverse-number.c` — 1 条 ✅
+- [x] `exercises\W3-Day3-pointer-const.c` — 1 条 ✅
+- [x] `exercises\W3-Day4-pointer-strcpy.c` — 1 条 ✅
+- [x] `projects\projects/w3-string-processor\main.c` — 1 条 ✅
 
 ---
 
 ## 本周三个动作
 
 1. **清零 15 条警告**（7 个文件）—— 已完成 8 条
-2. **读 `projects/multi-file-template/`**，理解多文件工程怎么组织
-3. **自己写一个 Makefile**，把 `w3-pointer-toolbox` 拆成多文件
+2. **读 `samples/multi-file-template/`**，理解多文件工程怎么组织
+3. **自己写一个 Makefile**，把 `projects/w3-pointer-toolbox` 拆成多文件
 
 ---
 
@@ -75,10 +75,10 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 今天只做一件事：**学会用 `chk` 和 `b` 这两个命令。**
 
 - [x] 打开终端，`cd` 到 `c-learning`
-- [x] 跑 `chk example\W2-Day2-prime-number.c` → 显示 **clean, zero warnings**
-- [x] 跑 `chk example\W3-Day2-pointer-array-relationship.c` → 显示警告
-- [x] 跑 `b example\W3-Day1-function-isprime.c`，输入 `17` → 输出 `17是素数`
-- [x] 跑 `b example\W2-Day2-reverse-number.c` → **停下不运行**，指出第 8 行有问题
+- [x] 跑 `chk exercises\W2-Day2-prime-number.c` → 显示 **clean, zero warnings**
+- [x] 跑 `chk exercises\W3-Day2-pointer-array-relationship.c` → 显示警告
+- [x] 跑 `b exercises\W3-Day1-function-isprime.c`，输入 `17` → 输出 `17是素数`
+- [x] 跑 `b exercises\W2-Day2-reverse-number.c` → **停下不运行**，指出第 8 行有问题
 
 **额外完成**：把仓库目录加进 PATH（以后 `chk` 不用加 `.\`）；统一换行符策略；两次 git 提交并推送成功。
 
@@ -90,16 +90,16 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 用 `chk <文件>` 逐条看，改一条重跑一次。
 
-- [x] `example\W3-Day2-pointer-array-relationship.c` — **8 条** `-Wformat=` ✅
+- [x] `exercises\W3-Day2-pointer-array-relationship.c` — **8 条** `-Wformat=` ✅
   - `(void *)(arr + 1)` — 注意括号要包住整个算式，因为 `(void *)` 优先级高于 `+`
-- [x] `example\W4-Day1-pointer-myMemcpy.c` — **1 条** `-Wdiscarded-qualifiers` ✅
+- [x] `exercises\W4-Day1-pointer-myMemcpy.c` — **1 条** `-Wdiscarded-qualifiers` ✅
   - 提示：`char *s = (const char*)src;` 把 `const` 丢了。
   - 正确写法：`const char *s = (const char *)src;`
   - **这是真 bug**：在单片机上，字符串常量放在只读区，往那里写会直接崩溃（HardFault）
-- [x] `example\W3-Day4-pointer-strcpy.c` — **1 条** `-Wparentheses` ✅
+- [x] `exercises\W3-Day4-pointer-strcpy.c` — **1 条** `-Wparentheses` ✅
   - 提示：`while (*dest++ = *src++);` 外面再加一层括号：`while ((*dest++ = *src++))`
 
-**正确的写法对照在 `projects\multi-file-template\my_string.c`**，可以打开对着看。
+**正确的写法对照在 `samples\multi-file-template\my_string.c`**，可以打开对着看。
 
 **今天的验收**：这 3 个文件跑 `chk` 都是 clean。
 
@@ -107,15 +107,15 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ## Day 3（周三 09-30）：修 2 个真 bug ✅ 已完成（警告也已全部清零）
 
-- [x] `example\W2-Day2-reverse-number.c` — 1 条 ✅ `-Wunused-variable`
+- [x] `exercises\W2-Day2-reverse-number.c` — 1 条 ✅ `-Wunused-variable`
   - 第 8 行 `int ret=0;` 声明了从没用过 → 删掉
-- [x] `example\W3-Day3-pointer-const.c` — 1 条 ✅ `-Wunused-but-set-variable`
+- [x] `exercises\W3-Day3-pointer-const.c` — 1 条 ✅ `-Wunused-but-set-variable`
   - `p1` 只赋值没使用 → 在 printf 里用一下，或改成 `(void)p1;`
-- [x] `w3-pointer-toolbox\main.c` — 2 条 ✅ `-Wparentheses`（第 99、127 行）
+- [x] `projects\projects/w3-pointer-toolbox\main.c` — 2 条 ✅ `-Wparentheses`（第 99、127 行）
   - 和 Day2 的 strcpy 同一个问题
-- [x] `w3-string-processor\main.c` — 1 条 ✅ `-Wsign-compare`（第 106 行）
+- [x] `projects\projects/w3-string-processor\main.c` — 1 条 ✅ `-Wsign-compare`（第 106 行）
   - 有符号数和无符号数比较 → 两边统一成 `int`，或给 `strlen` 的结果加 `(int)`
-- [x] **真 bug ①**：`example\W2-Day4-array-char.c` 第 8 行 ✅
+- [x] **真 bug ①**：`exercises\W2-Day4-array-char.c` 第 8 行 ✅
   - `scanf("%s", str)` 没有限制宽度，`str` 只有 1000 字节
   - 改成 `scanf("%999s", str)`（留 1 个字节给结尾的 `\0`）
   - 验证：输入 1200 个字符，改之前会崩溃，改之后不会
@@ -129,7 +129,7 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ## Day 4（周四 10-01）：面试题 + 把警告讲明白
 
-- [x] C 面试题：指针与数组、const 语义 ✅（notes/W4-面试题.c，5 题）
+- [x] C 面试题：指针与数组、const 语义 ✅（exercises/W4-面试题.c，5 题）
 - [x] 把 15 条警告每一条用自己的话解释 ✅（见 `notes\W4-警告笔记.md`，319 行）
   - 它为什么是警告？不改会出什么问题？
   - 把答案写进 `notes\W4-警告笔记.md`
@@ -140,8 +140,8 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ## Day 5（周五 10-02）：读懂 Makefile
 
-- [x] 打开 `projects\multi-file-template\Makefile`，逐行看懂 ✅
-- [x] 在 `projects\multi-file-template` 下依次跑四个命令 ✅
+- [x] 打开 `samples\multi-file-template\Makefile`，逐行看懂 ✅
+- [x] 在 `samples\multi-file-template` 下依次跑四个命令 ✅
   - `mingw32-make check`（只查警告）
   - `mingw32-make`（编译）
   - `mingw32-make run`（运行）
@@ -154,7 +154,7 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ## Day 6（周六 10-03）：自己拆一个多文件工程
 
-- [x] 把 `w3-pointer-toolbox\main.c` 拆成三个文件 ✅（`w4-my-toolbox\`）
+- [x] 把 `projects\projects/w3-pointer-toolbox\main.c` 拆成三个文件 ✅（`projects\projects/w4-my-toolbox\`）
   - `my_string.h`（声明）
   - `my_string.c`（实现）
   - `main.c`（测试代码）
@@ -184,8 +184,8 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 ## 常用命令速查
 
 ```powershell
-.\chk example\W2-Day2-prime-number.c      # 只查警告
-.\b   example\W2-Day2-prime-number.c      # 编译并运行
+.\chk exercises\W2-Day2-prime-number.c      # 只查警告
+.\b   exercises\W2-Day2-prime-number.c      # 编译并运行
 powershell -ExecutionPolicy Bypass -File tools\check-all.ps1   # 查全部 53 个文件
 ```
 

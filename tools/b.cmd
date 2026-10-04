@@ -2,7 +2,7 @@
 REM ============================================================
 REM  Build and run one .c file  (ask  dsh  if you forget)
 REM
-REM  Usage:  b example\W5-bit-ops.c
+REM  Usage:  b exercises\W5-bit-ops.c
 REM
 REM  Uses -Werror: any warning counts as failure, so you cannot
 REM  run code that still has warnings. That is the habit.
@@ -11,7 +11,7 @@ REM ============================================================
 if "%~1"=="" (
     echo.
     echo Usage: b ^<path-to-c-file^>
-    echo Example: b example\W5-bit-ops.c
+    echo Example: b exercises\W5-bit-ops.c
     echo.
     exit /b 1
 )

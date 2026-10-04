@@ -126,7 +126,7 @@ unsigned char f(unsigned char value, int n)
 > **你可以记录我这一周出现的错误，不理解的知识点，然后直接汇总给我，我周末再看。**"
 
 **我的改进承诺（从 W5 开始）**：
-1. 你的代码文件（`example/`、`w4-my-toolbox/`、`notes/`）**我只读不改**，只指出问题 + 给提示
+1. 你的代码文件（`exercises/`、`projects/w4-my-toolbox/`、`notes/`）**我只读不改**，只指出问题 + 给提示
 2. 笔记/复盘**由我整理成成品**，你只看 + 填"现在懂了吗"
 3. 只保留必须你自己想的部分（如"用自己的话解释"）
 
@@ -197,7 +197,7 @@ unsigned char f(unsigned char value, int n)
 |---|---|---|
 | W4 编译警告清零 | 15 → 0 条 | 62 个文件零警告 |
 | W4 真 bug 修复 | 2 / 2 | 栈溢出、负数下标越界 |
-| W4 多文件工程 + Makefile | 通过 | `w4-my-toolbox`（自修 8 处 Makefile 错误） |
+| W4 多文件工程 + Makefile | 通过 | `projects/w4-my-toolbox`（自修 8 处 Makefile 错误） |
 | W4 面试题（指针与数组、const） | 5 / 5 | |
 | W5 位运算 | 16 / 17 | 错 G4：无符号右移 |
 | W5 struct / typedef / enum | 概念 11/13 + 3 个函数全通过 | 含最难的帧打包 |
