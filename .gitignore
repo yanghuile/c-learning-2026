@@ -37,3 +37,14 @@ desktop.ini
 # 复制粘贴 C 代码时 shell 误重定向产生的意外文件
 max_len*
 *.c)
+
+# Keil / ARMCC 产物
+*.axf
+*.crf
+*.d
+*.lst
+*.htm
+*.lnp
+*.dep
+*.scvd
+*.uvguix.*
