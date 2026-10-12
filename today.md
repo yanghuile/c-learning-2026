@@ -1,6 +1,99 @@
-# 今天做什么（W4 · 2026-09-28 ~ 10-04）
+# 今天做什么（W6 · 2026-10-12 ~ 10-18）
 
 > 每天 14:30 会弹窗提醒。忘了弹窗内容就看这个文件，或看 `study-daily.md`。
+
+**本周主题：环形缓冲区（嵌入式最核心的数据结构）**
+
+---
+
+## 🎯 本周目标
+
+**用数组 + 读写指针实现环形缓冲区，彻底搞懂满/空判定。**
+
+| 项 | 内容 |
+|---|---|
+| **为什么学它** | 串口接收、按键缓冲、ADC 采样 —— 嵌入式几乎所有"收数据"的场景都用它 |
+| **周末交付** | `projects/w6-ringbuf/` —— 带边界测试的环形缓冲区模块 |
+| **面试价值** | 环形缓冲的"满/空判定"是**嵌入式高频面试题** |
+| **后续用途** | W13（UART 不定长接收）会直接复用这个模块 |
+
+---
+
+## 📅 本周 7 天
+
+### Day 1（周一 10-12）：预览 —— 为什么嵌入式离不开环形缓冲
+
+- [ ] 想清楚：串口每来一个字节就触发一次中断，数据该存哪里？
+- [ ] 如果把收到的字节直接塞进大数组，会有什么问题？（提示：满了怎么办、谁来消费）
+- [ ] 画出「生产者写、消费者读」的环形示意图
+
+**完成标准**：能说清环形缓冲区解决什么问题，以及它和普通数组的区别
+
+---
+
+### Day 2（周二 10-13）：环形缓冲区（一）基本结构
+
+- [ ] 定义结构体：缓冲区数组 + 容量 + 读下标 + 写下标
+- [ ] 实现 `rb_init`（初始化）、`rb_is_empty`、`rb_is_full`
+- [ ] 实现 `rb_put`（写入一个字节）、`rb_get`（读出一个字节）
+
+**完成标准**：能存能取、能判断空满，且空/满两种状态不会混淆
+
+---
+
+### Day 3（周三 10-14）：满/空判定的两种方案 ★ **本周重点**
+
+- [ ] 方案 A：牺牲一个空间（写指针+1 == 读指针就算满）—— 理解为什么这样能区分空和满
+- [ ] 方案 B：额外用一个计数器 `count` 记录元素个数
+- [ ] 两种都实现，比较优缺点
+- [ ] 处理"缓冲区满了还继续写"的策略：丢弃新数据 / 覆盖最旧数据（选一种，说明理由）
+
+**完成标准**：能解释两种方案的区别，并说清为什么"不能只靠读写指针相等"判断
+
+---
+
+### Day 4（周四 10-15）：批量接口 + 边界测试
+
+- [ ] 实现 `rb_write_buf`（一次写多个字节，返回实际写入数）
+- [ ] 实现 `rb_read_buf`（一次读多个字节，返回实际读出数）
+- [ ] 实现 `rb_count`（当前元素个数）、`rb_clear`
+- [ ] 写测试覆盖：空缓冲区读、满缓冲区写、容量为 1、**反复读写几千次不丢数据**
+
+**完成标准**：批量接口正确；测试全通过（尤其"反复读写几千次"）
+
+---
+
+### Day 5（周五 10-16）：工程化 —— 抽成可复用模块
+
+- [ ] 建 `projects/w6-ringbuf/`：`rb.h`、`rb.c`、`test_rb.c`
+- [ ] 写 Makefile：`check` / `test` / `clean`
+- [ ] 写 README：接口说明 + 两种满/空方案的对比
+- [ ] 用 `mingw32-make test` 验证全部测试通过
+
+**完成标准**：工程可独立编译测试，README 说清设计取舍
+
+---
+
+### Day 6（周六 10-17）：把环形缓冲用到真实场景 ★
+
+> **原计划是"STM32 环境搭建"—— 你已完成，改成更有用的内容**
+
+- [ ] 模拟串口接收：一个函数模拟"中断收字节"，另一个函数模拟"主循环处理"
+- [ ] 用环形缓冲连接两者：中断只管往缓冲里塞，主循环从缓冲里取
+- [ ] 故意让"生产"快于"消费"，观察缓冲区满时的行为
+- [ ] （进阶）画一个时序图，说明为什么这样能避免丢数据
+
+**完成标准**：能说清"中断里只做最少的事"这个原则，以及环形缓冲在其中起的作用
+
+---
+
+### Day 7（周日 10-18）：周复盘 + 预习 GPIO
+
+- [ ] 复盘：环形缓冲区的两种满/空方案，用自己的话写进笔记
+- [ ] 预习：GPIO 的 8 种模式（输入/输出/复用/模拟 各两种）
+- [ ] 预习：什么是"寄存器地址映射"，为什么可以用结构体指针访问寄存器
+
+**完成标准**：能说出 GPIO 至少 4 种模式，并知道寄存器是靠地址访问的
 
 ---
 
@@ -20,7 +113,7 @@
 
 | ❌ 错误做法 | 为什么错 | ✅ 正确做法 |
 |---|---|---|
-| 在根目录建 `W6-链表.c` | 根目录只放 `README.md`/`today.md` | 放 `exercises/W6-链表.c` |
+| 在根目录建 `W6-ringbuf.c` | 根目录只放 `README.md`/`today.md` | 放 `exercises/W6-ringbuf.c` |
 | 把 `.c` 练习放 `notes/` | `notes/` 只放 `.md` | 放 `exercises/` |
 | 在 `projects/` 下建单个 `.c` | `projects/` 只放"需要多文件协作"的 | 单个 `.c` 放 `exercises/` |
 
@@ -45,7 +138,7 @@
 | 时机 | 为什么 |
 |---|---|
 | **每晚学习结束时**（最重要） | 电脑坏了/丢了，这几周的成果全没。GitHub 就是你的备份 |
-| **完成一个目标时** | 比如今天「警告清零」，这是一个天然的里程碑 |
+| **完成一个目标时** | 比如今天"警告清零"，这是一个天然的里程碑 |
 | **换电脑或换环境前** | 不然代码分在两台机器上，会冲突 |
 | **每次 `commit` 后立刻 `push`** | 别攒着，攒着容易忘 |
 
@@ -75,181 +168,105 @@ Markdown 的勾选框语法就是**空格换成字母 x**：
 
 ---
 
-## 当前进度
+## 📊 整体进度
 
-**验收标准：`check-all` 显示零警告**
+| 周次 | 内容 | 状态 |
+|---|---|---|
+| W4 | 编译警告清零 + 工程化起步 | ✅ 完成（62 文件零警告） |
+| W5 | 位运算 + struct + 关键字 + **单链表全操作** | ✅ 完成（含链表库工程） |
+| **W6** | **环形缓冲区** | 🔵 **本周** |
+| W7 | STM32 入门：手写寄存器 GPIO + 时钟树 | ⬜ |
+| W8 | 定时器 + PWM | ⬜ |
 
-| 指标 | 起始 | 现在 | 目标 |
-|---|---|---|---|
-| 零警告文件 | 46 | **62** ✅ | 全部 |
-| 警告条数 | 15 | **0** ✅ | 0 |
+**已完成的验收成绩**（详见 `notes/error-notes.md`）：
 
-**警告清零情况（全部完成）：**
+| 内容 | 成绩 |
+|---|---|
+| 位运算 | 16 / 17 |
+| struct / typedef / enum | 概念 11/13 + 3 函数全通过 |
+| volatile / static / const / extern | 4.5 / 5 |
+| 指针回炉验收 | 11.5 / 12 |
+| 链表基础 / 进阶 / 反转（17 个函数） | 全部通过 |
+| `projects/w5-linked-list` 测试 | 61 项断言全通过 |
+| 边界情况专项 | **8 / 8** |
 
-- [x] `exercises\W3-Day2-pointer-array-relationship.c` — 8 条 ✅ 已清零
-- [x] `exercises\W4-Day1-pointer-myMemcpy.c` — 1 条（**真 bug**）✅
-- [x] `projects\projects/w3-pointer-toolbox\main.c` — 2 条 ✅
-- [x] `exercises\W2-Day2-reverse-number.c` — 1 条 ✅
-- [x] `exercises\W3-Day3-pointer-const.c` — 1 条 ✅
-- [x] `exercises\W3-Day4-pointer-strcpy.c` — 1 条 ✅
-- [x] `projects\projects/w3-string-processor\main.c` — 1 条 ✅
-
----
-
-## 本周三个动作
-
-1. **清零 15 条警告**（7 个文件）—— 已完成 8 条
-2. **读 `samples/multi-file-template/`**，理解多文件工程怎么组织
-3. **自己写一个 Makefile**，把 `projects/w3-pointer-toolbox` 拆成多文件
+**唯一待补**：栈与队列（求职前补，纯面试算法）
 
 ---
 
-## Day 1（周一 09-28）：先学会用工具，不动代码 ✅ 已完成
+## ⚠️ 当前弱点提醒（来自 W5 复盘）
 
-今天只做一件事：**学会用 `chk` 和 `b` 这两个命令。**
+**边界情况**是唯一稳定复现的弱点（同一类 bug 出现 3 次）：
 
-- [x] 打开终端，`cd` 到 `c-learning`
-- [x] 跑 `chk exercises\W2-Day2-prime-number.c` → 显示 **clean, zero warnings**
-- [x] 跑 `chk exercises\W3-Day2-pointer-array-relationship.c` → 显示警告
-- [x] 跑 `b exercises\W3-Day1-function-isprime.c`，输入 `17` → 输出 `17是素数`
-- [x] 跑 `b exercises\W2-Day2-reverse-number.c` → **停下不运行**，指出第 8 行有问题
+| # | Bug | 类型 |
+|---|---|---|
+| 1 | `insert_tail` 空链表丢节点 | 空链表 |
+| 2 | `split_odd_even` 空指针解引用 | 第一个节点 |
+| 3 | `sort_list` `\|\|` 应为 `&&` | 最后一个节点 |
 
-**额外完成**：把仓库目录加进 PATH（以后 `chk` 不用加 `.\`）；统一换行符策略；两次 git 提交并推送成功。
+**防护规则**（每周都提醒自己）：
 
-**验收**：能说出 `chk`（只检查）和 `b`（检查通过才编译运行）的区别。
+> **每写一行解引用（`p->xxx`），先问：「这个 `p` 有没有可能是 NULL？」**
+> 可能 → 前面必须有判断或保证；不可能 → 说得出为什么不可能。
 
----
-
-## Day 2（周二 09-29）：修 3 个文件（10 条警告）
-
-用 `chk <文件>` 逐条看，改一条重跑一次。
-
-- [x] `exercises\W3-Day2-pointer-array-relationship.c` — **8 条** `-Wformat=` ✅
-  - `(void *)(arr + 1)` — 注意括号要包住整个算式，因为 `(void *)` 优先级高于 `+`
-- [x] `exercises\W4-Day1-pointer-myMemcpy.c` — **1 条** `-Wdiscarded-qualifiers` ✅
-  - 提示：`char *s = (const char*)src;` 把 `const` 丢了。
-  - 正确写法：`const char *s = (const char *)src;`
-  - **这是真 bug**：在单片机上，字符串常量放在只读区，往那里写会直接崩溃（HardFault）
-- [x] `exercises\W3-Day4-pointer-strcpy.c` — **1 条** `-Wparentheses` ✅
-  - 提示：`while (*dest++ = *src++);` 外面再加一层括号：`while ((*dest++ = *src++))`
-
-**正确的写法对照在 `samples\multi-file-template\my_string.c`**，可以打开对着看。
-
-**今天的验收**：这 3 个文件跑 `chk` 都是 clean。
-
----
-
-## Day 3（周三 09-30）：修 2 个真 bug ✅ 已完成（警告也已全部清零）
-
-- [x] `exercises\W2-Day2-reverse-number.c` — 1 条 ✅ `-Wunused-variable`
-  - 第 8 行 `int ret=0;` 声明了从没用过 → 删掉
-- [x] `exercises\W3-Day3-pointer-const.c` — 1 条 ✅ `-Wunused-but-set-variable`
-  - `p1` 只赋值没使用 → 在 printf 里用一下，或改成 `(void)p1;`
-- [x] `projects\projects/w3-pointer-toolbox\main.c` — 2 条 ✅ `-Wparentheses`（第 99、127 行）
-  - 和 Day2 的 strcpy 同一个问题
-- [x] `projects\projects/w3-string-processor\main.c` — 1 条 ✅ `-Wsign-compare`（第 106 行）
-  - 有符号数和无符号数比较 → 两边统一成 `int`，或给 `strlen` 的结果加 `(int)`
-- [x] **真 bug ①**：`exercises\W2-Day4-array-char.c` 第 8 行 ✅
-  - `scanf("%s", str)` 没有限制宽度，`str` 只有 1000 字节
-  - 改成 `scanf("%999s", str)`（留 1 个字节给结尾的 `\0`）
-  - 验证：输入 1200 个字符，改之前会崩溃，改之后不会
-- [x] **真 bug ②**：同一个文件第 12 行 ✅
-  - `count[str[i]-'a']++`，输入大写字母 `ABC` 时下标变成负数 → 越界写
-  - 改法：先判断是不是小写字母，或把字母统一转成小写再算
-
-**今天的验收**：跑 `check-all` → **零警告**。
-
----
-
-## Day 4（周四 10-01）：面试题 + 把警告讲明白
-
-- [x] C 面试题：指针与数组、const 语义 ✅（exercises/W4-面试题.c，5 题）
-- [x] 把 15 条警告每一条用自己的话解释 ✅（见 `notes\W4-警告笔记.md`，319 行）
-  - 它为什么是警告？不改会出什么问题？
-  - 把答案写进 `notes\W4-警告笔记.md`
-
-**今天的验收**：15 条警告，每条你都能说出「不改会怎样」。
-
----
-
-## Day 5（周五 10-02）：读懂 Makefile
-
-- [x] 打开 `samples\multi-file-template\Makefile`，逐行看懂 ✅
-- [x] 在 `samples\multi-file-template` 下依次跑四个命令 ✅
-  - `mingw32-make check`（只查警告）
-  - `mingw32-make`（编译）
-  - `mingw32-make run`（运行）
-  - `mingw32-make clean`（清理）
-- [x] 打开 `my_string.h`，搞懂 include guard 在防什么 ✅
-
-**今天的验收**：能解释「为什么头文件要有 include guard」和「为什么实现要放 .c 而不是 .h」。
-
----
-
-## Day 6（周六 10-03）：自己拆一个多文件工程
-
-- [x] 把 `projects\projects/w3-pointer-toolbox\main.c` 拆成三个文件 ✅（`projects\projects/w4-my-toolbox\`）
-  - `my_string.h`（声明）
-  - `my_string.c`（实现）
-  - `main.c`（测试代码）
-- [x] 照样板写一个自己的 Makefile ✅（修了 8 处错误后跑通）
-- [x] `mingw32-make check` 零警告 ✅
-
-**今天的验收**：`mingw32-make` 一条命令能编译出可执行文件。
-
----
-
-## Day 7（周日 10-04）：复盘 + 提交
-
-- [x] 跑 `check-all`，确认全部零警告（62 个文件）✅
-- [x] 写 `notes\W4-复盘.md` ✅
-- [x] Git 提交并推送（W4 共 15 个提交）✅
-  ```
-  git add -A
-  git commit -m "W4: 编译警告清零 + 多文件工程与 Makefile"
-  git push
-  ```
-- [x] 三件套已下单 ✅
-
-**本周结束的标志**：`check-all` 显示全部零警告（62 个文件）✅ + 两个真 bug 已修 ✅ + 多文件工程已拆好 ✅
+**环形缓冲区天然是边界密集的**（空、满、容量 1、反复读写）——
+**这周正好是练这个习惯的好机会。**
 
 ---
 
 ## 常用命令速查
 
 ```powershell
-.\chk exercises\W2-Day2-prime-number.c      # 只查警告
-.\b   exercises\W2-Day2-prime-number.c      # 编译并运行
-powershell -ExecutionPolicy Bypass -File tools\check-all.ps1   # 查全部 53 个文件
+cd D:\Users\Yanghuile\source\repos\c-learning
+
+chk exercises\xxx.c          # 只检查警告，不运行
+b   exercises\xxx.c          # 编译并运行（有警告拒绝运行）
+
+powershell -ExecutionPolicy Bypass -File tools\check-all.ps1   # 检查全部文件
+
+# 多文件工程（projects/ 下）
+cd projects\w6-ringbuf
+mingw32-make test            # 编译并运行测试
+mingw32-make check           # 只检查警告
+mingw32-make clean           # 清理
 ```
 
 ---
 
-# W4 完成情况（2026-09-28 ~ 10-04）✅ 全部完成
+## 📚 历史记录
+
+<details>
+<summary>W4（2026-09-28 ~ 10-04）：编译警告清零 + 工程化起步 ✅</summary>
 
 | 任务 | 状态 |
 |---|---|
 | 62 个文件编译警告清零（原 15 条） | ✅ |
 | 修 2 个真 bug（栈溢出、负数下标越界） | ✅ |
-| 建立 chk / b / check-all 工具链 | ✅ |
-| 统一换行符策略（.gitattributes） | ✅ |
+| 建立 `chk` / `b` / `check-all` 工具链 | ✅ |
+| 统一换行符策略（`.gitattributes`） | ✅ |
 | 拆多文件工程 + 手写 Makefile | ✅ |
 | 警告笔记（319 行） | ✅ |
 | W4 复盘 | ✅ |
 | 面试题 5 道 | ✅ |
 | 三件套下单 | ✅ |
 
-# W5 完成情况（原定 10-05 起，实际提前完成）✅ 全部完成
+</details>
 
-| 内容 | 验收结果 |
+<details>
+<summary>W5（2026-10-05 ~ 10-11）：位运算 + struct + 关键字 + 单链表 ✅</summary>
+
+| 内容 | 结果 |
 |---|---|
-| 位运算 | ✅ 验收 16/17 |
-| struct / typedef / enum | ✅ 概念 11/13，sizeof / offsetof / 帧打包全部通过 |
-| volatile / static / const / extern | ✅ 概念 4.5/5 |
+| 位运算 | 16 / 17 |
+| struct / typedef / enum | 概念 11/13 + 帧打包通过 |
+| volatile / static / const / extern | 4.5 / 5 |
+| 指针回炉验收 | 11.5 / 12 |
+| 链表 Day2/3/4（17 个函数） | 全部通过，`reverse_iter` 闭卷默写通过 |
+| `projects/w5-linked-list` | 16 接口 + 61 项断言测试全通过 |
+| 综合应用题（4 题） | 4 / 4 |
+| 边界专项（8 题） | **8 / 8** |
+| 仓库结构重组 | ✅ 按用途分为 exercises/projects/samples/notes/tools |
 
-**待补（已记录，用到时再补）**：
-- [ ] **指针回炉验收**：函数指针 + 多级指针 + 指针运算（学生选 B：用到时再补）
+**额外产出**：第一个可复用库（`.h`/`.c` 分离）、第一个自动化测试工程、第一个完整 Makefile
 
-# 复盘清单
-
-见 notes/W4-W5-复盘清单.md
+</details>
