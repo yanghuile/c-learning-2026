@@ -8,13 +8,68 @@
  *  │        真正的解析交给主循环（可以慢慢做）。                    │
  *  └────────────────────────────────────────────────────────────┘
  *
+ *  ============================================================
+ *  时序图：为什么中断里只做最少的事
+ *  ============================================================
+ *
+ *  【做法 1：在中断里直接解析】—— 错误
+ *
+ *   串口字节到达    b0         b1         b2         b3
+ *                  │          │          │          │
+ *                  ▼          ▼          ▼          ▼
+ *   时间轴 ────────┼──────────┼──────────┼──────────┼────────►
+ *                  │          │          │          │
+ *   中断服务   ██████████████████
+ *              └── 解析 b0（花了几百微秒）──┘
+ *                             ✗
+ *                          b1 到达时中断还没返回
+ *                          → 硬件寄存器被覆盖 → b1 永久丢失
+ *
+ *   串口接收寄存器只有一个字节的空间，中断不返回，新数据就会覆盖它。
+ *   这就是"中断里做慢事 = 丢数据"的根本原因。
+ *
+ *  ------------------------------------------------------------
+ *
+ *  【做法 2：中断只塞缓冲，主循环解析】—— 正确
+ *
+ *   串口字节到达    b0   b1   b2   b3   b4   b5   b6
+ *                  │    │    │    │    │    │    │
+ *                  ▼    ▼    ▼    ▼    ▼    ▼    ▼
+ *   中断服务       ▄    ▄    ▄    ▄    ▄    ▄    ▄      ← 每次只几微秒
+ *                  │    │    │    │    │    │    │
+ *                  └────┴────┴────┴────┴────┴────┘
+ *                                │
+ *                                ▼
+ *                     ┌─────────────────────┐
+ *                     │  环形缓冲            │   ← 中断只管往这里塞
+ *                     │  [b0 b1 b2 b3 ...]  │      塞完立刻返回
+ *                     └──────────┬──────────┘
+ *                                │ 主循环有空就来取
+ *                                ▼
+ *   主循环      ─────────────────████████████████──────────────►
+ *                              （解析 b0~b3：算校验、组帧、打印）
+ *                               花几百微秒也没关系
+ *
+ *   ★ 环形缓冲在这里的角色：把"生产（中断）"和"消费（主循环）"
+ *     在时间上解耦。中断不必等主循环，主循环也不必赶上中断的节奏
+ *     —— 只要【平均】处理速度跟得上就行（见场景 4 的时间预算表）。
+ *
+ * ============================================================
+ *  仿真参数
+ * ============================================================
  *
  *  用【虚拟时间 virt_us】代替真实时间，单位微秒：
  *
- *    - 发送端每 BYTE_INTERVAL_US 微秒产生一个字节 → 调用 isr_rx_byte()
- *    - 主循环每 POLL_PERIOD_US 微秒调用一次 main_loop_poll()
+ *    - 发送端每 g_byte_interval_us 微秒产生一个字节 → 调用 isr_rx_byte()
+ *    - 主循环每 g_poll_period_us 微秒调用一次 main_loop_poll()
  *    - main_loop_poll() 里【每处理一个字节】消耗 g_consumer_us_per_byte 微秒
  *      （模拟"解析、计算、打印"要花的时间）
+ *    - 每次轮询最多处理 g_max_bytes_per_poll 个字节（模拟"处理能力有限"）
+ *
+ *  消费者上限 = g_max_bytes_per_poll / g_poll_period_us（字节/秒）
+ *  生产者速率 = 1 / g_byte_interval_us（字节/秒）
+ *      上限 < 生产 → 持续溢出（场景 2）
+ *      上限 > 生产 → 不溢出（场景 1、3）
  * ============================================================ */
 
 #include <stdio.h>
@@ -83,6 +138,13 @@ static uint32_t stat_bytes_lost     = 0;  /* 生产侧因缓冲满丢弃多少 *
 static uint32_t stat_bytes_consumed = 0;  /* 主循环取走多少字节 */
 static uint32_t stat_frames_ok      = 0;  /* 成功解析帧数 */
 static uint32_t stat_frames_bad     = 0;  /* 校验/格式错误帧数 */
+static uint32_t stat_overwritten    = 0;  /* 覆盖策略下：被挤掉的最旧字节数 */
+
+/* ★ 场景 5 用：切换中断里的溢出处理策略
+ *     0 = 丢新数据（rb_put 失败就算了）
+ *     1 = 覆盖最旧（先丢掉一个最旧的，再写新的）
+ */
+static int g_use_overwrite = 0;
 
 /* 假串口字节流 */
 static const char *g_stream = NULL;
@@ -122,6 +184,9 @@ static size_t make_frame(char *out, const char *payload)
 
 /* ------------------------------------------------------------
  *  4.1 isr_rx_byte —— 串口接收中断服务函数（ISR）
+ *
+ *  策略 A【丢新数据】：缓冲满了就丢掉这个刚到的字节。
+ *  下面的 isr_rx_byte_overwrite 是策略 B，用于场景 5 的对比。
  * ------------------------------------------------------------ */
 static void isr_rx_byte(RingBuf *rb, uint8_t b)
 {
@@ -129,6 +194,24 @@ static void isr_rx_byte(RingBuf *rb, uint8_t b)
     {
         rb->overflow_drop++;
         stat_bytes_lost++;
+    }
+}
+
+/* ------------------------------------------------------------
+ *  4.1b isr_rx_byte_overwrite —— 同样的中断，但策略 B【覆盖最旧】
+ *
+ *  ★ 注意：这个函数稍微"重"一点（满了要多做一次 rb_get + rb_put），
+ *     但因为 rb_get/rb_put 都是几个指令，中断时间依然在微秒级 ——
+ *     策略差异不会影响"中断要快"这个原则。
+ * ------------------------------------------------------------ */
+static void isr_rx_byte_overwrite(RingBuf *rb, uint8_t b)
+{
+    if (rb_put(rb, b) == 0)          /* 满了 */
+    {
+        uint8_t dummy;
+        rb_get(rb, &dummy);          /* 1) 挤掉最旧的那个字节 */
+        rb_put(rb, b);               /* 2) 再写入新的 */
+        stat_overwritten++;          /* 记一笔：覆盖掉了多少 */
     }
 }
 
@@ -243,7 +326,12 @@ static void sender_produce_one_byte(RingBuf *rb)
     if (g_stream_pos >= g_stream_len) return;
     uint8_t b = (uint8_t)g_stream[g_stream_pos++];
     stat_bytes_sent++;
-    isr_rx_byte(rb, b);
+
+    /* 按全局开关选择中断策略（场景 5 用来对比两种溢出处理） */
+    if (g_use_overwrite)
+        isr_rx_byte_overwrite(rb, b);
+    else
+        isr_rx_byte(rb, b);
 }
 
 /* 按虚拟时间推进，模拟 duration_us 微秒 */
@@ -312,6 +400,7 @@ static void reset_all(RingBuf *rb, const char *stream)
     virt_us = 0;
     stat_bytes_sent = stat_bytes_lost = 0;
     stat_bytes_consumed = stat_frames_ok = stat_frames_bad = 0;
+    stat_overwritten = 0;
     stat_poll_calls = 0;
     g_stream = stream;
     g_stream_len = strlen(stream);
@@ -323,6 +412,7 @@ static void print_stats(const char *title)
     printf("  ---- %s ----\n", title);
     printf("    发送字节数          : %u\n", (unsigned)stat_bytes_sent);
     printf("    生产侧丢弃(缓冲满)  : %u\n", (unsigned)stat_bytes_lost);
+    printf("    生产侧覆盖(挤掉最旧): %u\n", (unsigned)stat_overwritten);
     printf("    主循环消费字节数    : %u\n", (unsigned)stat_bytes_consumed);
     printf("    主循环被调用次数    : %u\n", (unsigned)stat_poll_calls);
     printf("    成功解析帧数        : %u\n", (unsigned)stat_frames_ok);
@@ -479,6 +569,67 @@ int main(void)
     printf("    2. 所以中断里只做最少的事（塞进缓冲），\n");
     printf("       把解析/计算/打印这些慢活全部挪到主循环 —— \n");
     printf("       而主循环本身也要保证平均每字节耗时 < 字节到达间隔。\n");
+
+    printf("\n  按回车继续...");
+    (void)getchar();
+
+    /* ==========================================================
+     * 场景 5：两种溢出策略的对比 ★
+     *
+     * 用完全相同的参数（就是场景 2 那组"必然溢出"的），
+     * 分别跑两遍：中断里用"丢新"和"覆盖最旧"。
+     * 看两种策略下，帧的破坏方式有什么不同。
+     * ========================================================== */
+    printf("\n========== 场景 5：两种溢出策略对比 ★ ==========\n");
+    printf("  参数同场景 2（115200 / 每字节 150us / 上限 6667 字节每秒）\n");
+    printf("  也就是说：缓冲【必然满】，区别只在满了以后怎么办\n\n");
+    {
+        size_t off = 0;
+        for (int i = 0; i < 1000; i++)
+        {
+            char payload[32];
+            sprintf(payload, "SEQ%03d", i);
+            off += make_frame(stream + off, payload);
+        }
+
+        g_byte_interval_us     = 87;
+        g_poll_period_us       = 300;
+        g_consumer_us_per_byte = 150;
+        g_max_bytes_per_poll   = 2;
+        g_print_frames         = 0;
+
+        /* ---- 策略 A：丢新数据 ---- */
+        g_use_overwrite = 0;
+        reset_all(&rb, stream);
+        run_until_done(&rb);
+        printf("  【策略 A：丢新数据】满了就丢弃刚到的字节\n");
+        print_stats("丢新数据");
+
+        /* ---- 策略 B：覆盖最旧 ---- */
+        g_use_overwrite = 1;
+        reset_all(&rb, stream);
+        run_until_done(&rb);
+        printf("  【策略 B：覆盖最旧】满了就挤掉最旧的字节\n");
+        print_stats("覆盖最旧");
+
+        g_use_overwrite = 0;   /* 复位，避免影响后续 */
+
+        printf("  ★ 两种策略的差异（用数据说话）：\n");
+        printf("    - 丢新：后到的字节被丢 → 每个被丢的位置相当于\"挖掉一块\"，\n");
+        printf("            帧头 # 丢了就整帧作废；帧尾丢了就粘到下一帧，\n");
+        printf("            表现为\"帧数变少 + 校验失败\"。\n");
+        printf("    - 覆盖最旧：旧字节被挤掉 → 缓冲区里始终是【最新的】数据，\n");
+        printf("            表现为\"帧数也变少\"，但帧边界更容易错位，\n");
+        printf("            出现大量\"校验失败\"的假帧（旧的半截 + 新的半截拼在一起）。\n\n");
+        printf("  ★ 所以选择取决于你的协议和需求：\n");
+        printf("    - 串口【帧】解析（本实验）→ 用\"丢新\"：\n");
+        printf("        丢掉整帧比拼出错误帧更安全（错误帧可能触发错误动作）。\n");
+        printf("        而且丢帧是可检测的（校验失败/帧数不对），能上报异常。\n");
+        printf("    - 传感器【最新值】缓存 / ADC 采样 → 用\"覆盖最旧\"：\n");
+        printf("        旧值本来就没意义，永远保留最新一次测量才正确。\n");
+        printf("    - 命令队列 → 用\"丢新\"并【上报队列满】：\n");
+        printf("        丢命令必须让上层知道，不能悄悄丢。\n");
+    }
 
     printf("\n========== 结束 ==========\n");
     return 0;
