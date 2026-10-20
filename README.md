@@ -46,10 +46,13 @@ c-learning/
 │   └── warnings.log                自动生成的诊断报告（已 gitignore）
 │
 ├── README.md                   本文件
-├── today.md                    当前周的任务清单与进度
 ├── .gitattributes              换行符策略
 └── .gitignore                  忽略规则
 ```
+
+> **学习计划已迁出**：从 W7（2026-10-19）起学习主体转为 STM32，
+> 周计划（`today.md`）和月度计划（`学习计划\`）都放在 `D:\STM32C8T6\`。
+> 本仓库只保留 C 语言 / 数据结构的练习与笔记。
 
 ### 各类内容放哪（判断标准）
 
